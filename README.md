@@ -18,7 +18,7 @@ After this, you should be able to reboot your node and expecting it to return an
 You can uninstall this tool simply by:
 
 ```
-$ ./install.sh
+$ ./uninstall.sh
 ```
 
 ## How to watch it happening?
