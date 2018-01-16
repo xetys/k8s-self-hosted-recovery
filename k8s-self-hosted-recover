@@ -1,0 +1,22 @@
+#!/bin/bash
+
+swapoff -a
+echo "[k8s-self-hosted-recover] Restoring old plane..."
+kubeadm alpha phase controlplane all
+sleep 5
+echo "[k8s-self-hosted-recover] Waiting while the api server is back.."
+kubectl --kubeconfig /etc/kubernetes/admin.conf get node >/dev/null 2>/dev/null
+while [ $? != 0 ]; do
+    sleep 5
+    kubectl --kubeconfig /etc/kubernetes/admin.conf get node >/dev/null 2>/dev/null
+done
+
+echo "[k8s-self-hosted-recover] Api server online, switch to self-hosting..."
+
+echo "[k8s-self-hosted-recover] Deleting old self-hosting control pane..."
+kubectl --kubeconfig /etc/kubernetes/admin.conf get ds -n kube-system | grep self-hosted | awk '{print$1}' | xargs kubectl --kubeconfig /etc/kubernetes/admin.conf -n kube-system delete ds
+
+echo "[k8s-self-hosted-recover] Re-enable self-hosting..."
+kubeadm alpha phase self-hosting convert-from-staticpods
+
+echo "[k8s-self-hosted-recover] Re-enabling self-hosting succeeded!"
