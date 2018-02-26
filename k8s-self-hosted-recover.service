@@ -1,9 +1,10 @@
 [Unit]
 Description=Recovers self-hosted k8s after reboot
-After=kubelet.service
+Wants=network-online.target
+After=kubelet.service network.target network-online.target
 
 [Service]
-User=root
+Type=oneshot
 ExecStart=/usr/local/bin/k8s-self-hosted-recover
 
 [Install]
