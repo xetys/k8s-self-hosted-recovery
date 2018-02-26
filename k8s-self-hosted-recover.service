@@ -3,7 +3,7 @@ Description=Recovers self-hosted k8s after reboot
 After=kubelet.service
 
 [Service]
-Use=root
+User=root
 ExecStart=/usr/local/bin/k8s-self-hosted-recover
 
 [Install]
